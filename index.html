@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jessie Math 捷析 - 規律問題</title>
+    
+    <meta name="description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+    <meta property="og:title" content="Jessie Math 捷析  - 規律問題">
+    <meta property="og:description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+    <meta property="og:type" content="website">
+    
+    <meta property="og:image" content="g6-u3.png">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1536">
+    <meta property="og:image:alt" content="Jessie Math 遊戲封面">
+    
+    <link rel="image_src" href="g6-u3.png">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jessie Math 捷析  - 規律問題">
+    <meta name="twitter:description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+    <meta name="twitter:image" content="g6-u3.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --bg-color: #f9f9f9;
+            --btn-bg: #ecf0f1;
+            --btn-hover: #d5dbdb;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            /* 背景圖片設定：按比例縮放延伸，確保右上角品牌字樣出現 */
+            background-image: url('jessie logo.jpg');
+            background-size: cover;
+            background-position: top right;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-color: var(--bg-color); /* 圖片失效時的備用色 */
+            color: var(--text-color);
+        }
+
+        /* 手機直向旋轉提示 (RWD) - 僅在小尺寸設備生效，平板以上不限制 */
+        #orientation-warning {
+            display: none;
+        }
+
+        @media screen and (max-width: 767px) and (orientation: portrait) {
+            body {
+                overflow: hidden;
+                background-image: none; /* 提示畫面時隱藏背景 */
+                background-color: var(--primary-color);
+            }
+            #orientation-warning {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: var(--primary-color);
+                color: white;
+                z-index: 9999;
+                text-align: center;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+            #orientation-warning svg {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+                animation: rotateDevice 2s infinite ease-in-out;
+            }
+            @keyframes rotateDevice {
+                0% { transform: rotate(0deg); }
+                50% { transform: rotate(90deg); }
+                100% { transform: rotate(90deg); }
+            }
+            .main-content {
+                display: none !important;
+            }
+            #whiteboard-btn {
+                display: none !important;
+            }
+        }
+
+        /* Header 樣式 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-color);
+            background-color: transparent;
+            object-fit: cover;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-color);
+            padding: 8px 15px;
+            margin-left: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: white;
+        }
+
+        .nav-links a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* 遊戲容器 */
+        .game-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 30px auto;
+            /* 讓底色微透，突顯背景但保持文字易讀 */
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(4px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        h2 { color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
+
+        /* 元件樣式 */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin: 5px 0;
+            transition: 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover { background-color: #1a252f; transform: translateY(-2px); }
+        .btn-secondary { background-color: var(--accent-color); }
+        .btn-secondary:hover { background-color: #d35400; }
+        
+        /* 難度按鈕區塊 */
+        .difficulty-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .diff-btn {
+            flex: 1;
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid #ccc;
+        }
+        .diff-btn:hover { background-color: #f0f0f0; color: var(--primary-color); transform: none; }
+        .diff-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: scale(1.02);
+        }
+
+        /* 規則區塊 */
+        .rules-box {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-left: 5px solid var(--accent-color);
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* 遊戲主畫面資訊列 */
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            background: #eee;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .time-alert { color: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* 選擇題按鈕 */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .option-btn {
+            background-color: var(--btn-bg);
+            color: var(--text-color);
+            padding: 20px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+        }
+        .option-btn:hover { background-color: var(--btn-hover); border-color: #bbb; }
+        .option-btn.correct { background-color: #2ecc71; color: white; border-color: #27ae60; }
+        .option-btn.wrong { background-color: #e74c3c; color: white; border-color: #c0392b; }
+
+        /* 遊戲大廳網格 */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* 排行榜 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th { background-color: var(--primary-color); color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        
+        /* 復盤區塊 */
+        .review-item {
+            background: #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: left;
+            border-left: 5px solid #e1b12c;
+        }
+        
+        /* 控制列 */
+        .control-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .control-bar button { width: auto; flex: 1; }
+        
+        #feedback {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            min-height: 30px;
+            margin: 10px 0;
+        }
+
+        /* 捷析老師加油區 (改為左下角) */
+        #mascot-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px; /* 從 right 改為 left */
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            z-index: 100;
+            pointer-events: none; /* 穿透點擊，不影響作答與白板 */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(20px);
+            flex-direction: row; /* 頭像在左，對話框在右 */
+        }
+        #mascot-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .mascot-bubble {
+            background: white;
+            border: 2px solid var(--accent-color);
+            padding: 8px 12px;
+            border-radius: 20px 20px 20px 0; /* 箭頭朝左下角 */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-weight: bold;
+            color: var(--primary-color);
+            max-width: 180px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .mascot-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-color);
+            background-color: white;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* 平板/手機 RWD 調整 */
+        @media screen and (max-width: 850px) {
+            .nav-links a { padding: 6px 10px; font-size: 14px; margin-left: 5px; }
+            .brand h1 { font-size: 20px; }
+            .info-bar { font-size: 16px; padding: 10px; }
+            .level-grid { grid-template-columns: 1fr; }
+            .options-grid { grid-template-columns: 1fr; }
+            
+            #mascot-container {
+                bottom: 10px;
+                left: 10px; /* 從 right 改為 left */
+            }
+            .mascot-avatar { width: 45px; height: 45px; }
+            .mascot-bubble { font-size: 13px; padding: 6px 10px; }
+        }
+
+        /* Footer 樣式 */
+        footer {
+            margin-top: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+        .footer-pill {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            gap: 15px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        .footer-left, .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+        .footer-icon {
+            color: var(--accent-color);
+        }
+
+        /* ====== 白板功能樣式 ====== */
+        #whiteboard-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9000;
+            pointer-events: none; /* 預設不攔截點擊 */
+            background: transparent;
+        }
+        #whiteboard-canvas.active {
+            pointer-events: auto; /* 開啟時攔截點擊以進行繪圖 */
+            cursor: crosshair;
+            background: rgba(255, 255, 255, 0.1); /* 非常淡的背景讓玩家知道在白板模式 */
+        }
+        #whiteboard-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9001;
+            background-color: #27ae60;
+            color: white;
+            border: 2px solid white;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: auto;
+        }
+        #whiteboard-btn:hover {
+            background-color: #2ecc71;
+            transform: scale(1.05);
+        }
+        #whiteboard-tools {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            z-index: 9001;
+            display: none; /* 預設隱藏，開啟白板時顯示 */
+            flex-direction: column;
+            gap: 10px;
+        }
+        .wb-tool-btn {
+            background-color: #fff;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            padding: 0;
+        }
+        .wb-tool-btn:hover { background-color: #f0f0f0; }
+        .wb-tool-btn.active-tool { border-color: var(--accent-color); background-color: #fff3e0; }
+
+    </style>
+</head>
+<body>
+
+    <div id="orientation-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+            <path d="M16 1H8C6.34 1 5 2.34 5 4v16c0 1.66 1.34 3 3 3h8c1.66 0 3-1.34 3-3V4c0-1.66-1.34-3-3-3zm1 19c0 .55-.45 1-1 1H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h8c.55 0 1 .45 1 1v16zm-5-2h-4v-1h4v1z"/>
+        </svg>
+        <h2 style="border:none; color:white;">📱 旋轉您的設備</h2>
+        <p>為了獲得最佳的遊戲體驗，請將手機旋轉至橫向 (Landscape) 進行遊戲！</p>
+    </div>
+
+    <canvas id="whiteboard-canvas"></canvas>
+    <button id="whiteboard-btn" onclick="toggleWhiteboard()">🖍️ 開啟白板計算</button>
+    <div id="whiteboard-tools">
+        <button class="wb-tool-btn" onclick="clearWhiteboard()" title="清除畫布"><i class="fas fa-trash"></i></button>
+        <button class="wb-tool-btn" onclick="changeColor('#e74c3c')" style="color:#e74c3c;" title="紅色筆"><i class="fas fa-pen"></i></button>
+        <button class="wb-tool-btn" onclick="changeColor('#2980b9')" style="color:#2980b9;" title="藍色筆"><i class="fas fa-pen"></i></button>
+        <button class="wb-tool-btn" onclick="changeColor('#333333')" style="color:#333333;" title="黑色筆"><i class="fas fa-pen"></i></button>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="brand">
+                <img src="JESSIEMATH-Q.png" alt="Jessie Math Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23e67e22\'/><text x=\'50\' y=\'60\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'>J</text></svg>'">
+                <h1>Jessie Math 捷析</h1>
+            </div>
+            <div class="nav-links">
+                <a href="https://jessiemath0703-chu.github.io/website2/">🏠 首頁</a>
+                <a href="https://jessiemath0703-chu.github.io/Game-Lobby/">🎮 遊戲大廳</a>
+                <a href="https://jessiemath0703-chu.github.io/Game-Lobby/#g6-u3">🔙 G6規律問題</a>
+            </div>
+        </header>
+
+        <div class="game-container">
+            
+            <div id="mascot-container">
+                <img class="mascot-avatar" src="JESSIEMATH-Q.png" alt="Jessie老師" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23e67e22\'/><text x=\'50\' y=\'60\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'>J</text></svg>'">
+                <div class="mascot-bubble" id="mascot-message">加油！</div>
+            </div>
+
+            <div id="screen-login" class="screen active">
+                <h2>歡迎挑戰 Jessie Math 規律問題</h2>
+                
+                <div class="rules-box">
+                    <h3>📜 遊戲規則說明</h3>
+                    <ul>
+                        <li><strong>計分方式：</strong> 答對一題得 10 分。</li>
+                        <li><strong>Combo 連擊：</strong> 連續答對將啟動 Combo 倍率加成！</li>
+                        <li><strong>時間機制：</strong> 答對增加 5 秒，答錯扣除 5 秒。</li>
+                        <li><strong>防弊機制：</strong> 每次題目的內容、數字、配圖、選項位置都會自動大洗牌。</li>
+                        <li><strong>復盤學習：</strong> 遊戲結束後會顯示錯誤題目的正確解答。</li>
+                        <li><strong>輔助工具：</strong> 點擊左下角「🖍️ 開啟白板計算」可在螢幕上直接塗寫運算！</li>
+                    </ul>
+                </div>
+
+                <input type="text" id="playerName" placeholder="請輸入你的挑戰者姓名 (必填)" required>
+                <button onclick="login()">進入關卡主選單 🚀</button>
+            </div>
+
+            <div id="screen-lobby" class="screen">
+                <h2>關卡主選單 - 選擇你的挑戰</h2>
+                <h3 style="text-align: center; margin-top:0;">挑戰者：<span id="display-name" style="color: var(--accent-color);"></span></h3>
+                
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <label style="font-weight: bold; font-size: 18px; display:block; margin-bottom:10px;">請先選擇難度：</label>
+                    <div class="difficulty-group">
+                        <button class="diff-btn active" onclick="setDifficulty(90, this)">🟢 基礎 (90秒)</button>
+                        <button class="diff-btn" onclick="setDifficulty(60, this)">🟡 進階 (60秒)</button>
+                        <button class="diff-btn" onclick="setDifficulty(45, this)">🔴 魔王 (45秒)</button>
+                    </div>
+                </div>
+
+                <div class="level-grid">
+                    <button onclick="startGame(1)">第一關<br>間隔問題 🌳</button>
+                    <button onclick="startGame(2)">第二關<br>找規則 🔍</button>
+                    <button onclick="startGame(3)">第三關<br>選擇與組合 🍔</button>
+                </div>
+
+                <h2>🏆 英雄排行榜 (Top 10)</h2>
+                <table id="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>名次</th>
+                            <th>玩家</th>
+                            <th>關卡</th>
+                            <th>難度</th>
+                            <th>分數 / 答題數</th>
+                            <th>日期 / 時間</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="screen-game" class="screen">
+                <div class="info-bar">
+                    <div>⏳ 剩餘時間: <span id="timer">0</span> 秒</div>
+                    <div>🔥 Combo: <span id="combo">0</span></div>
+                    <div>⭐ 分數: <span id="score">0</span></div>
+                </div>
+
+                <h3 id="question-text" style="font-size: 22px; line-height: 1.5; margin-bottom: 10px;">問題載入中...</h3>
+                
+                <div id="feedback"></div>
+
+                <div class="options-grid" id="options-container">
+                    </div>
+
+                <div class="control-bar">
+                    <button class="btn-secondary" id="btn-pause" onclick="togglePause()">⏸️ 暫停</button>
+                    <button class="btn-secondary" onclick="restartLevel()">🔄 重新開始</button>
+                    <button onclick="showScreen('screen-lobby')">🔙 回主選單</button>
+                </div>
+            </div>
+
+            <div id="screen-result" class="screen">
+                <h2>🎯 挑戰結束！</h2>
+                
+                <div style="text-align: center; font-size: 18px; margin: 20px 0; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid var(--accent-color);">
+                    <p style="margin-top: 0;">此次分數：<strong id="final-score" style="color: var(--accent-color); font-size: 36px;">0</strong> 分</p>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 15px; font-weight: bold;">
+                        <span style="background: #eee; padding: 6px 15px; border-radius: 20px;">🔥 最大連擊：<span id="final-combo">0</span> 次</span>
+                        <span style="background: #e8f8f5; color:#27ae60; padding: 6px 15px; border-radius: 20px;">✅ 答對：<span id="final-correct">0</span> / <span class="final-total">0</span> 題</span>
+                        <span style="background: #fdedec; color:#c0392b; padding: 6px 15px; border-radius: 20px;">❌ 答錯：<span id="final-wrong">0</span> / <span class="final-total">0</span> 題</span>
+                    </div>
+                </div>
+
+                <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 5px; color:#c0392b;">📝 錯題復盤區</h3>
+                <div id="review-container">
+                    </div>
+
+                <div class="control-bar" style="margin-top: 30px;">
+                    <button class="btn-secondary" onclick="restartLevel()">🔄 再玩一次本關</button>
+                    <button onclick="showScreen('screen-lobby')">🔙 回關卡主選單</button>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <div class="footer-pill">
+                <div class="footer-left">
+                    <div class="footer-dot" aria-hidden="true"></div>
+                    <div class="footer-copy">© 2025–2026 Jessie Math 捷析老師. All rights reserved.</div>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-icon" aria-hidden="true"><i class="fas fa-compass"></i></div>
+                    <div class="footer-tagline">數學不迷路，捷析Jessie帶你走向理解。</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ====== 白板核心邏輯 ======
+        const canvas = document.getElementById('whiteboard-canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let whiteboardActive = false;
+        let currentPenColor = '#e74c3c'; // 預設紅筆
+
+        function resizeCanvas() {
+            const savedData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if(savedData) ctx.putImageData(savedData, 0, 0); // 盡可能保留繪圖
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = currentPenColor;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function toggleWhiteboard() {
+            whiteboardActive = !whiteboardActive;
+            const btn = document.getElementById('whiteboard-btn');
+            const tools = document.getElementById('whiteboard-tools');
+            
+            if (whiteboardActive) {
+                canvas.classList.add('active');
+                btn.innerHTML = '❌ 關閉白板 (可點擊答案)';
+                btn.style.backgroundColor = '#e74c3c';
+                tools.style.display = 'flex';
+            } else {
+                canvas.classList.remove('active');
+                btn.innerHTML = '🖍️ 開啟白板計算';
+                btn.style.backgroundColor = '#27ae60';
+                tools.style.display = 'none';
+            }
+        }
+
+        function clearWhiteboard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function changeColor(color) {
+            currentPenColor = color;
+            ctx.strokeStyle = currentPenColor;
+        }
+
+        // 滑鼠事件
+        canvas.addEventListener('mousedown', (e) => {
+            if(!whiteboardActive) return;
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.clientX, e.clientY);
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            if(!isDrawing || !whiteboardActive) return;
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+        });
+        canvas.addEventListener('mouseup', () => { isDrawing = false; });
+        canvas.addEventListener('mouseout', () => { isDrawing = false; });
+
+        // 觸控事件 (支援手機與平板)
+        canvas.addEventListener('touchstart', (e) => {
+            if(!whiteboardActive) return;
+            e.preventDefault(); // 防止滾動
+            isDrawing = true;
+            const touch = e.touches[0];
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX, touch.clientY);
+        }, { passive: false });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            if(!isDrawing || !whiteboardActive) return;
+            e.preventDefault(); // 防止畫面跟著手指拉動
+            const touch = e.touches[0];
+            ctx.lineTo(touch.clientX, touch.clientY);
+            ctx.stroke();
+        }, { passive: false });
+        
+        canvas.addEventListener('touchend', () => { isDrawing = false; });
+
+        // --- 核心邏輯 ---
+        // 動態題庫生成器：每次呼叫都會產生全新數字與對應 SVG 的題目陣列 (擴增至 30 題、數字亂數範圍擴大)
+        function generateQuestionBank() {
+            let bank = { 1: [], 2: [], 3: [] };
+            
+            // 幫助函數：隨機整數
+            const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+            for(let i=0; i<30; i++) { // 擴大迴圈數量，確保每次隨機性極高
+                // =============== 第一關：間隔問題 ===============
+                // 1. 圓形周長問題
+                let l1_i1 = rand(3, 20); // 擴大間隔
+                let l1_n1 = rand(20, 80); // 擴大數量
+                let l1_t1 = l1_i1 * l1_n1;
+                bank[1].push({
+                    q: `圓形池塘周長 ${l1_t1} 公尺，沿著池邊每隔 ${l1_i1} 公尺放一個盆栽，共放幾個？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='green' stroke-width='4'/><text x='30' y='55' font-size='12'>周長${l1_t1}m</text></svg>`,
+                    options: [`${l1_n1-1} 個`, `${l1_n1} 個`, `${l1_n1+1} 個`, `${l1_n1+2} 個`],
+                    ans: 1
+                });
+
+                // 2. 直線兩端都要
+                let l1_i2 = rand(5, 25);
+                let l1_n2 = rand(20, 100);
+                let l1_t2 = l1_i2 * (l1_n2 - 1);
+                bank[1].push({
+                    q: `道路長 ${l1_t2} 公尺，一側每隔 ${l1_i2} 公尺種一棵樹。「兩端都要種」，共幾棵樹？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><line x1='10' y1='50' x2='290' y2='50' stroke='gray' stroke-width='4'/><path d='M30 40 L40 10 L50 40 Z' fill='green'/><text x='180' y='35' font-size='24'>...</text><path d='M250 40 L260 10 L270 40 Z' fill='green'/></svg>`,
+                    options: [`${l1_n2-2} 棵`, `${l1_n2-1} 棵`, `${l1_n2} 棵`, `${l1_n2+1} 棵`],
+                    ans: 2
+                });
+
+                // 3. 直線兩端都不要
+                let l1_i3 = rand(10, 40);
+                let l1_n3 = rand(15, 60);
+                let l1_t3 = l1_i3 * (l1_n3 + 1);
+                bank[1].push({
+                    q: `橋長 ${l1_t3} 公尺，一側每隔 ${l1_i3} 公尺設路燈。「兩端都不設」，共幾盞？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><line x1='0' y1='50' x2='300' y2='50' stroke='black' stroke-width='8'/><circle cx='60' cy='15' r='6' fill='gold'/><line x1='60' y1='21' x2='60' y2='50' stroke='gray' stroke-width='3'/><text x='200' y='35' font-size='24'>...</text></svg>`,
+                    options: [`${l1_n3} 盞`, `${l1_n3+1} 盞`, `${l1_n3+2} 盞`, `${l1_n3-1} 盞`],
+                    ans: 0
+                });
+
+                // 4. 指定間距長度
+                let l1_i4 = rand(2, 12);
+                let l1_s4 = rand(2, 15);
+                let l1_e4 = rand(25, 75);
+                let l1_a4 = (l1_e4 - l1_s4) * l1_i4;
+                bank[1].push({
+                    q: `走廊排椅子，每隔 ${l1_i4} 公尺放一張。從「第 ${l1_s4} 張」走到「第 ${l1_e4} 張」，共走了多遠？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><rect x='20' y='20' width='15' height='20' fill='saddlebrown'/><rect x='80' y='20' width='15' height='20' fill='saddlebrown'/><path d='M35 30 Q 57 10 80 30' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,2'/><text x='48' y='12' font-size='12' fill='red'>${l1_i4}m</text><text x='200' y='35' font-size='24'>...</text></svg>`,
+                    options: [`${l1_a4-l1_i4} 公尺`, `${l1_a4} 公尺`, `${l1_a4+l1_i4} 公尺`, `${l1_a4+l1_i4*2} 公尺`],
+                    ans: 1
+                });
+
+                // =============== 第二關：找規則 ===============
+                // 1. 六邊形 (5n+1)
+                let l2_n1 = rand(15, 80);
+                let l2_a1 = 5 * l2_n1 + 1;
+                bank[2].push({
+                    q: `火柴棒排相連正六邊形：\n圖1用 6 根，圖2用 11 根，圖3用 16 根。排 ${l2_n1} 個需幾根火柴棒？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 80'><path d='M20 40 L30 20 L50 20 L60 40 L50 60 L30 60 Z' fill='none' stroke='black' stroke-width='3'/><path d='M60 40 L70 20 L90 20 L100 40 L90 60 L70 60' fill='none' stroke='black' stroke-width='3'/><text x='180' y='50' font-size='24'>...</text></svg>`,
+                    options: [`${l2_a1-5} 根`, `${l2_a1} 根`, `${l2_a1+5} 根`, `${l2_a1+10} 根`],
+                    ans: 1
+                });
+
+                // 2. 三角形 (2n+1)
+                let l2_n2 = rand(25, 120);
+                let l2_a2 = 2 * l2_n2 + 1;
+                bank[2].push({
+                    q: `火柴棒排相連正三角形：\n圖1用 3 根，圖2用 5 根，圖3用 7 根。排 ${l2_n2} 個需幾根火柴棒？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><path d='M20 40 L40 10 L60 40 Z' fill='none' stroke='black' stroke-width='3'/><path d='M40 10 L80 10 L60 40' fill='none' stroke='black' stroke-width='3'/><text x='160' y='35' font-size='24'>...</text></svg>`,
+                    options: [`${l2_a2-2} 根`, `${l2_a2} 根`, `${l2_a2+2} 根`, `${l2_a2+4} 根`],
+                    ans: 1
+                });
+
+                // 3. 空心正方形 ((n-1)*4)
+                let l2_n3 = rand(15, 60);
+                let l2_a3 = (l2_n3 - 1) * 4;
+                bank[2].push({
+                    q: `空心正方形骨牌：用骨牌圍成空心正方形，每邊排 ${l2_n3} 個。共用幾個骨牌？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='20' y='20' width='60' height='60' fill='none' stroke='gray' stroke-width='8'/><text x='30' y='55' font-size='10' fill='black'>每邊${l2_n3}個</text></svg>`,
+                    options: [`${l2_a3-4} 個`, `${l2_a3} 個`, `${l2_a3+4} 個`, `${l2_a3+8} 個`],
+                    ans: 1
+                });
+
+                // 4. 疊積木 (等差數列和)
+                let l2_n5 = rand(10, 30);
+                let l2_a5 = (l2_n5 * (l2_n5 + 1)) / 2;
+                bank[2].push({
+                    q: `疊積木規律：\n第1層 1 塊，第2層 2 塊，第3層 3 塊... 疊 ${l2_n5} 層總共需要幾塊積木？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'><rect x='50' y='10' width='20' height='20' fill='%23f39c12' stroke='black'/><rect x='30' y='30' width='20' height='20' fill='%23f39c12' stroke='black'/><rect x='50' y='30' width='20' height='20' fill='%23f39c12' stroke='black'/></svg>`,
+                    options: [`${l2_a5-l2_n5} 塊`, `${l2_a5-1} 塊`, `${l2_a5} 塊`, `${l2_a5+l2_n5} 塊`],
+                    ans: 2
+                });
+
+
+                // =============== 第三關：選擇與組合 ===============
+                // 1. 餐點搭配 (A * B * C)
+                let l3_n1a = rand(3, 8);
+                let l3_n1b = rand(3, 7);
+                let l3_n1c = rand(2, 6);
+                let l3_a1 = l3_n1a * l3_n1b * l3_n1c;
+                bank[3].push({
+                    q: `美食街套餐有 主餐 ${l3_n1a} 種、副餐 ${l3_n1b} 種、湯品 ${l3_n1c} 種。各選一份搭配，共有幾種組合？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><rect x='10' y='10' width='75' height='40' fill='%23e74c3c' rx='5'/><text x='20' y='35' fill='white'>主餐(${l3_n1a})</text><rect x='95' y='10' width='75' height='40' fill='%23f1c40f' rx='5'/><text x='105' y='35'>副餐(${l3_n1b})</text><rect x='180' y='10' width='75' height='40' fill='%233498db' rx='5'/><text x='190' y='35' fill='white'>湯品(${l3_n1c})</text></svg>`,
+                    options: [`${l3_a1-3} 種`, `${l3_a1} 種`, `${l3_a1+3} 種`, `${l3_a1+6} 種`],
+                    ans: 1
+                });
+
+                // 2. 衣服搭配 (A * (B + C))
+                let l3_n2a = rand(4, 9);
+                let l3_n2b = rand(3, 8);
+                let l3_n2c = rand(3, 7);
+                let l3_a2 = l3_n2a * (l3_n2b + l3_n2c);
+                bank[3].push({
+                    q: `阿云有 ${l3_n2a} 件上衣、${l3_n2b} 件裙子、${l3_n2c} 件褲子(裙子和褲子擇一穿)。共有幾種穿搭組合？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><path d='M20 30 L30 10 L50 10 L60 30 L50 35 L50 50 L30 50 L30 35 Z' fill='lightblue' stroke='black'/><text x='70' y='35'>上衣(${l3_n2a})</text><path d='M150 15 L140 50 L180 50 L170 15 Z' fill='pink' stroke='black'/><text x='190' y='35'>下著(${l3_n2b}+${l3_n2c})</text></svg>`,
+                    options: [`${l3_n2a*l3_n2b+l3_n2c} 種`, `${l3_a2} 種`, `${l3_a2+l3_n2a} 種`, `${l3_n2a*l3_n2b*l3_n2c} 種`],
+                    ans: 1
+                });
+
+                // 3. 路線問題 (A * B)
+                let l3_n3a = rand(4, 9);
+                let l3_n3b = rand(4, 8);
+                let l3_a3 = l3_n3a * l3_n3b;
+                bank[3].push({
+                    q: `從 A地 到 B地 有 ${l3_n3a} 條路，從 B地 到 C地 有 ${l3_n3b} 條路。先到B再到C，共有幾種走法？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><circle cx='40' cy='30' r='15' fill='lightgreen'/><text x='40' y='34' text-anchor='middle'>A</text><circle cx='140' cy='30' r='15' fill='lightgreen'/><text x='140' y='34' text-anchor='middle'>B</text><circle cx='240' cy='30' r='15' fill='lightgreen'/><text x='240' y='34' text-anchor='middle'>C</text><path d='M55 30 L 125 30' fill='none' stroke='black' stroke-width='2'/><text x='85' y='25' font-size='12'>${l3_n3a}條</text><path d='M155 30 L 225 30' fill='none' stroke='black' stroke-width='2'/><text x='185' y='25' font-size='12'>${l3_n3b}條</text></svg>`,
+                    options: [`${l3_n3a+l3_n3b} 種`, `${l3_a3} 種`, `${l3_a3+2} 種`, `${l3_a3+4} 種`],
+                    ans: 1
+                });
+
+                // 4. 排兩位數
+                let d_arr = [0,1,2,3,4,5,6,7,8,9];
+                for (let k = d_arr.length - 1; k > 0; k--) {
+                    let j = Math.floor(Math.random() * (k + 1));
+                    [d_arr[k], d_arr[j]] = [d_arr[j], d_arr[k]];
+                }
+                let d_sel = d_arr.slice(0, 4);
+                let validFirst = d_sel.filter(x => x !== 0).length;
+                let l3_a5 = validFirst * 3; 
+                bank[3].push({
+                    q: `用 ${d_sel[0]}、${d_sel[1]}、${d_sel[2]}、${d_sel[3]} 排成「兩位數」(數字不可重複)。共有幾種排法？`,
+                    img: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60'><text x='20' y='38' font-size='24'>${d_sel.join('、')}</text><text x='150' y='38' font-size='18'>👉 兩位數</text></svg>`,
+                    options: [`${l3_a5-3} 種`, `${l3_a5} 種`, `${l3_a5+3} 種`, `${l3_a5+6} 種`],
+                    ans: 1
+                });
+            }
+            return bank;
+        }
+
+        let state = {
+            playerName: '',
+            difficultyTime: 90, 
+            currentLevel: 1,
+            score: 0,
+            timeLeft: 0,
+            combo: 0,
+            maxCombo: 0,
+            timer: null,
+            isPaused: false,
+            currentQuestions: [],
+            currentQIndex: 0,
+            reviewData: [],
+            
+            // 新增答題數追蹤
+            totalAnswered: 0,
+            correctCount: 0,
+            wrongCount: 0
+        };
+
+        const STORAGE_KEY = 'jessieMathLeaderboard_v8';
+
+        // 捷析老師隨機加油打氣詞庫
+        const mascotTimer = { id: null };
+        const correctMessages = [
+            "太棒了！完全正確！", 
+            "繼續保持這個節奏！", 
+            "你太強了！👍", 
+            "完美的計算！", 
+            "思路很清晰喔！", 
+            "就是這樣，天才！"
+        ];
+        const wrongMessages = [
+            "沒關係，再試一次！", 
+            "加油，你可以的！💪", 
+            "差一點點，再想想看！", 
+            "深呼吸，重新計算看看！", 
+            "失敗為成功之母！", 
+            "捷析老師相信你！"
+        ];
+
+        function triggerMascot(isCorrect) {
+            const container = document.getElementById('mascot-container');
+            const msgEl = document.getElementById('mascot-message');
+            const msgs = isCorrect ? correctMessages : wrongMessages;
+            
+            msgEl.innerText = msgs[Math.floor(Math.random() * msgs.length)];
+            msgEl.style.borderColor = isCorrect ? '#27ae60' : '#e74c3c';
+            msgEl.style.color = isCorrect ? '#27ae60' : '#e74c3c';
+
+            container.classList.add('show');
+
+            clearTimeout(mascotTimer.id);
+            mascotTimer.id = setTimeout(() => {
+                container.classList.remove('show');
+            }, 2500); // 2.5秒後自動消失
+        }
+
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function login() {
+            const nameInput = document.getElementById('playerName').value.trim();
+            if (!nameInput) {
+                alert("請輸入姓名喔！");
+                return;
+            }
+            state.playerName = nameInput;
+            document.getElementById('display-name').innerText = state.playerName;
+            
+            updateLeaderboardUI();
+            showScreen('screen-lobby');
+        }
+
+        function setDifficulty(time, btnElement) {
+            state.difficultyTime = time;
+            document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
+        function startGame(level) {
+            state.currentLevel = level;
+            restartLevel();
+        }
+
+        function restartLevel() {
+            clearInterval(state.timer);
+            state.score = 0;
+            state.combo = 0;
+            state.maxCombo = 0;
+            state.timeLeft = state.difficultyTime;
+            state.isPaused = false;
+            state.reviewData = [];
+            
+            // 重置答題數量
+            state.totalAnswered = 0;
+            state.correctCount = 0;
+            state.wrongCount = 0;
+            
+            // 【終極動態題庫系統】每次重來都產生全新的題目、數字、與SVG圖片
+            const dynamicBank = generateQuestionBank();
+            state.currentQuestions = shuffleArray([...dynamicBank[state.currentLevel]]);
+            state.currentQIndex = 0;
+
+            document.getElementById('btn-pause').innerText = "⏸️ 暫停";
+            updateInfoBar();
+            loadQuestion();
+            showScreen('screen-game');
+            state.timer = setInterval(tick, 1000);
+            
+            // 如果白板開啟中，進入遊戲時先關閉
+            if (whiteboardActive) toggleWhiteboard();
+        }
+
+        function tick() {
+            if (state.isPaused) return;
+            state.timeLeft--;
+            updateInfoBar();
+            
+            if (state.timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function togglePause() {
+            state.isPaused = !state.isPaused;
+            document.getElementById('btn-pause').innerText = state.isPaused ? "▶️ 繼續" : "⏸️ 暫停";
+            document.getElementById('options-container').style.pointerEvents = state.isPaused ? "none" : "auto";
+            
+            if (state.isPaused) {
+                document.getElementById('question-text').innerText = "遊戲暫停中...";
+                document.getElementById('feedback').innerText = "";
+            } else {
+                renderQuestionUI(state.currentQuestions[state.currentQIndex]);
+            }
+        }
+
+        function updateInfoBar() {
+            const timeEl = document.getElementById('timer');
+            timeEl.innerText = state.timeLeft;
+            timeEl.className = state.timeLeft <= 10 ? 'time-alert' : '';
+            document.getElementById('score').innerText = state.score;
+            document.getElementById('combo').innerText = state.combo;
+        }
+
+        function renderQuestionUI(qData) {
+            let formattedQ = qData.q.replace(/\n/g, '<br>');
+            let imgHtml = "";
+            if (qData.img) {
+                imgHtml = `<br><img src="${qData.img}" style="max-width: 100%; height: 120px; margin-top: 15px; border-radius: 8px; object-fit: contain; background: #fff; padding: 10px; border: 2px dashed var(--accent-color);">`;
+            }
+            document.getElementById('question-text').innerHTML = `Q: ${formattedQ} ${imgHtml}`;
+        }
+
+        function loadQuestion() {
+            if (state.currentQIndex >= state.currentQuestions.length) {
+                const dynamicBank = generateQuestionBank();
+                state.currentQuestions = shuffleArray([...dynamicBank[state.currentLevel]]);
+                state.currentQIndex = 0;
+            }
+
+            const qData = state.currentQuestions[state.currentQIndex];
+            renderQuestionUI(qData);
+            document.getElementById('feedback').innerText = ""; 
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            container.style.pointerEvents = "auto";
+
+            // 洗牌：打亂選項順序
+            let currentOptions = [...qData.options];
+            let correctOptionText = currentOptions[qData.ans]; 
+            currentOptions = shuffleArray(currentOptions); 
+            let newAnsIndex = currentOptions.indexOf(correctOptionText); 
+
+            currentOptions.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn, qData, newAnsIndex, correctOptionText);
+                container.appendChild(btn);
+            });
+            
+            // 換題時自動清除白板
+            clearWhiteboard();
+        }
+
+        function checkAnswer(selectedIndex, btn, qData, correctIndex, correctOptionText) {
+            document.getElementById('options-container').style.pointerEvents = "none"; 
+            
+            state.totalAnswered++; // 總答題數 +1
+
+            if (selectedIndex === correctIndex) {
+                btn.classList.add('correct');
+                state.correctCount++; // 答對數 +1
+                state.combo++;
+                if(state.combo > state.maxCombo) state.maxCombo = state.combo;
+                
+                let multiplier = 1 + (state.combo * 0.1);
+                state.score += Math.round(10 * multiplier);
+                state.timeLeft += 5; 
+                
+                showFeedback("✅ 太棒了！答對啦！ (時間 +5秒)", "#2ecc71");
+                triggerMascot(true); // 觸發答對鼓勵
+            } else {
+                btn.classList.add('wrong');
+                state.wrongCount++; // 答錯數 +1
+                document.querySelectorAll('.option-btn')[correctIndex].classList.add('correct');
+                state.combo = 0;
+                state.timeLeft -= 5; 
+                
+                state.reviewData.push({
+                    q: qData.q.replace(/\n/g, ' '), 
+                    wrongAns: btn.innerText,
+                    correctAns: correctOptionText
+                });
+
+                showFeedback(`❌ 答錯了！正確答案是「${correctOptionText}」 (時間 -5秒)`, "#e74c3c");
+                triggerMascot(false); // 觸發答錯安慰
+            }
+
+            updateInfoBar();
+            
+            setTimeout(() => {
+                if (state.timeLeft > 0) {
+                    state.currentQIndex++;
+                    loadQuestion();
+                } else {
+                    endGame();
+                }
+            }, 2000);
+        }
+
+        function showFeedback(text, color) {
+            const fb = document.getElementById('feedback');
+            fb.innerText = text;
+            fb.style.color = color;
+        }
+
+        function endGame() {
+            clearInterval(state.timer);
+            state.timeLeft = 0;
+            updateInfoBar();
+            
+            saveScore();
+            
+            // 若白板開啟，遊戲結束時自動關閉
+            if (whiteboardActive) toggleWhiteboard();
+            
+            // 填寫結算畫面數據
+            document.getElementById('final-score').innerText = state.score;
+            document.getElementById('final-combo').innerText = state.maxCombo;
+            document.getElementById('final-correct').innerText = state.correctCount;
+            document.getElementById('final-wrong').innerText = state.wrongCount;
+            document.querySelectorAll('.final-total').forEach(el => el.innerText = state.totalAnswered);
+            
+            // 完美優化的復盤機制顯示
+            const reviewContainer = document.getElementById('review-container');
+            if (state.reviewData.length === 0) {
+                reviewContainer.innerHTML = "<p style='text-align:center; color:#27ae60; font-size: 20px; font-weight:bold;'>太厲害了！本局沒有任何錯題！🎉</p>";
+            } else {
+                reviewContainer.innerHTML = state.reviewData.map((item, i) => `
+                    <div class="review-item">
+                        <strong style="font-size: 18px; color: var(--primary-color);">Q${i+1}: ${item.q}</strong><br>
+                        <div style="margin-top: 8px;">
+                            <span style="color:#c0392b; font-weight: bold;">你的答案：❌ ${item.wrongAns}</span><br>
+                            <span style="color:#27ae60; font-weight: bold;">正確解答：✅ ${item.correctAns}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            showScreen('screen-result');
+        }
+
+        function saveScore() {
+            if (state.score === 0) return;
+            let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            let diffName = state.difficultyTime === 90 ? "基礎" : (state.difficultyTime === 60 ? "進階" : "魔王");
+            
+            board.push({
+                name: state.playerName,
+                level: state.currentLevel,
+                diff: diffName,
+                score: state.score,
+                answered: state.totalAnswered, // 記錄總答題數
+                date: new Date().getTime() // 儲存時間戳記
+            });
+
+            board.sort((a, b) => b.score - a.score || b.date - a.date);
+            board = board.slice(0, 10); 
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+            updateLeaderboardUI();
+        }
+
+        function updateLeaderboardUI() {
+            let board = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = "";
+
+            if (board.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6' style='color:#7f8c8d; font-style:italic; padding: 20px;'>目前尚無紀錄，快來挑戰搶下第一名！</td></tr>";
+                return;
+            }
+
+            board.forEach((entry, index) => {
+                let rankIcon = (index + 1) + "th";
+                if (index === 0) rankIcon = "🥇";
+                if (index === 1) rankIcon = "🥈";
+                if (index === 2) rankIcon = "🥉";
+                if (index > 2) rankIcon = `🏅 ${index + 1}`;
+                
+                // 格式化日期為 YYYY/MM/DD HH:MM
+                let dateObj = new Date(entry.date);
+                let yyyy = dateObj.getFullYear();
+                let mm = (dateObj.getMonth()+1).toString().padStart(2, '0');
+                let dd = dateObj.getDate().toString().padStart(2, '0');
+                let hh = dateObj.getHours().toString().padStart(2, '0');
+                let min = dateObj.getMinutes().toString().padStart(2, '0');
+                let formattedDate = `${yyyy}/${mm}/${dd} ${hh}:${min}`;
+                
+                // 讀取答題數 (避免舊資料出錯，做個防呆)
+                let answeredText = entry.answered !== undefined ? entry.answered : "-";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-size: 1.2em;">${rankIcon}</td>
+                        <td style="font-weight:bold;">${entry.name}</td>
+                        <td>關卡 ${entry.level}</td>
+                        <td>${entry.diff}</td>
+                        <td style="color:var(--accent-color); font-weight:bold;">${entry.score} / ${answeredText}題</td>
+                        <td style="font-size: 0.9em; color: #555;">${formattedDate}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 工具函數：洗牌演算法
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        updateLeaderboardUI();
+    </script>
+</body>
+</html>
